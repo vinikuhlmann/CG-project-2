@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import io
 from OpenGL.GL import *
 from PIL import Image
 from model import *
@@ -60,6 +61,7 @@ def load_texture(texture_id, img_filepath):
     img = Image.open(img_filepath)
     img_width = img.size[0]
     img_height = img.size[1]
+    img = img.convert('RGB') # Caso seja .png
     image_data = img.tobytes("raw", "RGB", 0, -1)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data)
 

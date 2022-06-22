@@ -10,7 +10,7 @@ from model_manager import ModelManager
 
 GI.initialize()
 
-ModelManager.load_model('caixa', r=Coord3d(0.0, 1.0, 0.0))
+ModelManager.load_model('watchtower', r=Coord3d(0.0, 1.0, 0.0))
 ModelManager.load_model('luz', light_source=True, r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1))
 ModelManager.send_to_GPU()
 

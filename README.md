@@ -13,8 +13,8 @@ Projeto de construção de um cenário 3D com controle da câmera, movimento, te
 ## Tarefas
 ### Estrutura do código
 - [X] Classe de instanciação do programa
-- [X] Classe de objetos 3D
-- [ ] Administrador de renderização de objetos
+- [X] Classe de modelos 3D
+- [X] Administrador de modelos
 - [ ] Classe de câmera/mouse
 
 ### Objetos
