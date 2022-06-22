@@ -82,7 +82,6 @@ class ModelManager:
         print(f'Loading model {model_dir}')
         model_name = model_dir
         model_dir = os.path.join(ModelManager.main_dir, model_dir)
-        textures = []
         for filepath in os.listdir(model_dir):
             print(f'\tLoading {filepath}')
             filepath = os.path.join(model_dir, filepath)
@@ -100,10 +99,10 @@ class ModelManager:
             # Carregamento de textura
             elif filepath.endswith(('.jpg', '.png')):
                 load_texture(ModelManager.texture_count, filepath)
-                textures.append(ModelManager.texture_count)
+                texture = ModelManager.texture_count
                 ModelManager.texture_count += 1
         
-        model.add_textures(textures)
+        model.add_texture(texture)
         
         # Adiciona o modelo na lista e guarda suas informações
         ModelManager.models[model_name] = model

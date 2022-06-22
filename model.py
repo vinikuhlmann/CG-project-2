@@ -29,10 +29,10 @@ class Model:
         self.t = t
         self.s = s
 
-        self.textures = []
+        self.texture = None
     
-    def add_textures(self, textures):
-        self.textures = textures
+    def add_texture(self, texture):
+        self.texture = texture
 
     def model_matrix(self):
         angle_rad = math.radians(self.angle)
@@ -74,8 +74,7 @@ class Model:
         glUniform1f(loc_ks, ks)
         glUniform1f(loc_ns, ns)
         
-        for texture in self.textures:
-            glBindTexture(GL_TEXTURE_2D, texture) # Define id da textura do modelo
+        glBindTexture(GL_TEXTURE_2D, self.texture) # Define id da textura do modelo
         glDrawArrays(GL_TRIANGLES, self.start_vertex, self.vertex_count) # Renderiza
 
 class LightModel(Model):
@@ -102,6 +101,5 @@ class LightModel(Model):
         loc_light_pos = glGetUniformLocation(GI.program, "lightPos") # Localizacao da variavel lightPos na GPU
         glUniform3f(loc_light_pos, self.t.x, self.t.y, self.t.z) # Define a posição da luz
         
-        for texture in self.textures:
-            glBindTexture(GL_TEXTURE_2D, texture) # Define id da textura do modelo
+        glBindTexture(GL_TEXTURE_2D, self.texture) # Define id da textura do modelo
         glDrawArrays(GL_TRIANGLES, self.start_vertex, self.vertex_count) # Renderiza
