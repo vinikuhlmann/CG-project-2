@@ -66,7 +66,7 @@ def load_texture(texture_id, img_filepath):
 
 Coord3d = namedtuple('Coord3d', 'x y z') # ? Talvez substituir por glm.vec3
 
-class Object3d:
+class Model3d:
 
     vertex_total = 0
     texture_count = 0
@@ -85,16 +85,16 @@ class Object3d:
                 self.texture_coords_list.append( obj['texture_coords'][texture_coord_index-1] )
             for normal_index in face[2]:
                 self.normals_list.append( obj['normals'][normal_index-1] )
-        self.start_vertex = Object3d.vertex_total
+        self.start_vertex = Model3d.vertex_total
         self.vertex_count = len(self.vertices_list)
-        Object3d.vertex_total += self.vertex_count
+        Model3d.vertex_total += self.vertex_count
 
         self.texture_list = []
         for texture_filepath in texture_filepath_list: # Load textures
             print(f'Loading {texture_filepath}')
-            load_texture(Object3d.texture_count, texture_filepath)
-            self.texture_list.append(Object3d.texture_count)
-            Object3d.texture_count += 1
+            load_texture(Model3d.texture_count, texture_filepath)
+            self.texture_list.append(Model3d.texture_count)
+            Model3d.texture_count += 1
         
         self.angle = angle
         self.r = r

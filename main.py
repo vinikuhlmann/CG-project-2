@@ -6,7 +6,7 @@ import math
 from PIL import Image
 
 from glfw_instance import GlfwInstance
-from object3d import Coord3d, Object3d
+from model import Coord3d, Model3d
 
 
 glfw_instance = GlfwInstance(1280, 720, 10)
@@ -15,19 +15,19 @@ glfw_instance = GlfwInstance(1280, 720, 10)
     FUNCOES DE CARREGAMENTO
 """
 
-object3d_list = {
-    'caixa': Object3d('caixa2.obj', ['caixa_madeira.jpg'], r=Coord3d(0.0, 1.0, 0.0)),
-    'luz': Object3d('luz.obj', ['luz.png'], r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1)),
+model_list = {
+    'caixa': Model3d('caixa2.obj', ['caixa_madeira.jpg'], r=Coord3d(0.0, 1.0, 0.0)),
+    'luz': Model3d('luz.obj', ['luz.png'], r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1)),
 }
 
 # Gera listas com todas as coordenadas
 vertices_list = []
 texture_coords_list = []
 normals_list = []
-for key, object3d in object3d_list.items():
-    vertices_list += object3d.vertices_list
-    texture_coords_list += object3d.texture_coords_list
-    normals_list += object3d.normals_list
+for key, model in model_list.items():
+    vertices_list += model.vertices_list
+    texture_coords_list += model.texture_coords_list
+    normals_list += model.normals_list
 
 """
     ENVIO DE DADOS PARA A GPU
@@ -73,7 +73,7 @@ glEnableVertexAttribArray(loc_normals_coord)
 glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
 
 # Desenha os modelos
-def draw_object3d(object3d: Object3d, light=False):
+def draw_object3d(object3d: Model3d, light=False):
 
     mat_model = object3d.model()
     loc_model = glGetUniformLocation(glfw_instance.program, "model")
@@ -218,11 +218,11 @@ while not glfw.window_should_close(glfw_instance.window):
     if polygonal_mode==False:
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
     
-    draw_object3d(object3d_list['caixa'])
+    draw_object3d(model_list['caixa'])
     
     ang += 0.05
-    object3d_list['luz'].transform(Coord3d(math.cos(ang)*0.5, math.sin(ang)*0.5, 3.0))
-    draw_object3d(object3d_list['luz'], light=True)
+    model_list['luz'].transform(Coord3d(math.cos(ang)*0.5, math.sin(ang)*0.5, 3.0))
+    draw_object3d(model_list['luz'], light=True)
     
     mat_view = view()
     loc_view = glGetUniformLocation(glfw_instance.program, "view")
