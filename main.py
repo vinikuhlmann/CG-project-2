@@ -234,6 +234,7 @@ class Object3d:
 object3d_list = {
     'caixa': Object3d('caixa2.obj', ['caixa_madeira.jpg'], r=Coord3d(0.0, 1.0, 0.0)),
     'luz': Object3d('luz.obj', ['luz.png'], r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1)),
+    'watchtower': Object3d('watchtower/watchtower.obj', ['watchtower/Wood_Tower_Col.jpg', 'watchtower/Wood_Tower_Nor.jpg'], r=Coord3d(0.0, 1.0, 0.0)),
 }
 
 # Gera listas com todas as coordenadas
@@ -321,7 +322,6 @@ def draw_object3d(object3d: Object3d, light=False):
         glBindTexture(GL_TEXTURE_2D, texture) # Define id da textura do modelo
     glDrawArrays(GL_TRIANGLES, object3d.start_vertex, object3d.vertex_count) # Renderiza
 
-
 """
     CAMERA E MOUSE
 """
@@ -329,7 +329,6 @@ def draw_object3d(object3d: Object3d, light=False):
 camera_pos   = glm.vec3(0.0,  0.0,  15.0)
 camera_front = glm.vec3(0.0,  0.0, -1.0)
 camera_up    = glm.vec3(0.0,  1.0,  0.0)
-
 polygonal_mode = False
 
 def key_event(window,key,scancode,action,mods):
@@ -337,19 +336,21 @@ def key_event(window,key,scancode,action,mods):
     global camera_pos, camera_front, camera_up, polygonal_mode
     global ns_inc
     
-    cameraSpeed = 0.05
+    camera_speed = 0.1
     if key == glfw.KEY_W and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos += cameraSpeed * camera_front
+        camera_pos += camera_speed * camera_front
     if key == glfw.KEY_S and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos -= cameraSpeed * camera_front
+        camera_pos -= camera_speed * camera_front
     if key == glfw.KEY_A and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos -= glm.normalize(glm.cross(camera_front, camera_up)) * cameraSpeed
+        camera_pos -= glm.normalize(glm.cross(camera_front, camera_up)) * camera_speed
     if key == glfw.KEY_D and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos += glm.normalize(glm.cross(camera_front, camera_up)) * cameraSpeed
-    if key == glfw.KEY_P and action==glfw.PRESS and polygonal_mode==True:
-        polygonal_mode=False
-    else:
-        polygonal_mode=True
+        camera_pos += glm.normalize(glm.cross(camera_front, camera_up)) * camera_speed
+    if key == glfw.KEY_SPACE and action in (glfw.PRESS, glfw.REPEAT):
+        camera_pos += camera_speed * camera_up
+    if key == glfw.KEY_LEFT_SHIFT and action in (glfw.PRESS, glfw.REPEAT):
+        camera_pos -= camera_speed * camera_up
+    if key == glfw.KEY_P and action==glfw.PRESS:
+        polygonal_mode = not polygonal_mode
     if key == glfw.KEY_UP and (action==glfw.PRESS or glfw.REPEAT):
         ns_inc = ns_inc * 2
     if key == glfw.KEY_DOWN and (action==glfw.PRESS or glfw.REPEAT):
@@ -373,16 +374,17 @@ def mouse_event(window, xpos, ypos):
     lastX = xpos
     lastY = ypos
 
-    sensitivity = 0.3 
+    sensitivity = 0.1
     xoffset *= sensitivity
     yoffset *= sensitivity
 
     yaw += xoffset
     pitch += yoffset
-
     
-    if pitch >= 90.0: pitch = 90.0
-    if pitch <= -90.0: pitch = -90.0
+    if pitch >= 90.0:
+        pitch = 90.0
+    if pitch <= -90.0:
+        pitch = -90.0
 
     front = glm.vec3()
     front.x = math.cos(glm.radians(yaw)) * math.cos(glm.radians(pitch))
@@ -396,13 +398,12 @@ glfw.set_cursor_pos_callback(window, mouse_event)
 # Matriz view
 def view():
     global camera_pos, camera_front, camera_up
-    mat_view = glm.lookAt(camera_pos, camera_pos + camera_front, camera_up);
+    mat_view = glm.lookAt(camera_pos, camera_pos + camera_front, camera_up)
     mat_view = np.array(mat_view)
     return mat_view
 
 # Matriz projection
 def projection():
-
     # perspective parameters: fovy, aspect, near, far
     mat_projection = glm.perspective(glm.radians(45.0), width/height, 0.1, 1000.0)
     mat_projection = np.array(mat_projection)    
@@ -435,9 +436,9 @@ while not glfw.window_should_close(window):
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
     
     draw_object3d(object3d_list['caixa'])
+    draw_object3d(object3d_list['watchtower'])
     
     ang += 0.05
-
     object3d_list['luz'].transform(Coord3d(math.cos(ang)*0.5, math.sin(ang)*0.5, 3.0))
     draw_object3d(object3d_list['luz'], light=True)
     
