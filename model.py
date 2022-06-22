@@ -47,7 +47,11 @@ class Model:
         self.t = t
     
     # Desenha o modelo
-    def draw(self, ns_inc):
+    #   ka -> Coeficiente de reflexao ambiente do modelo
+    #   kd -> Coeficiente de reflexao difusa do modelo
+    #   ks -> Coeficiente de reflexao especular do modelo
+    #   ns -> Expoente de reflexao especular
+    def draw(self, ka, kd, ks, ns):
 
         mat_model = self.model_matrix()
         loc_model = glGetUniformLocation(GI.program, "model")
@@ -56,7 +60,7 @@ class Model:
         ka = 0.1 # Coeficiente de reflexao ambiente do modelo
         kd = 0.1 # Coeficiente de reflexao difusa do modelo
         ks = 0.9 # Coeficiente de reflexao especular do modelo
-        ns = ns_inc # Expoente de reflexao especular
+        ns = ns # Expoente de reflexao especular
         
         # Recupera localização das variáveis na GPU
         loc_ka = glGetUniformLocation(GI.program, "ka")
@@ -76,16 +80,11 @@ class Model:
 
 class LightModel(Model):
 
-    def draw(self, ns_inc):
+    def draw(self, ka, kd, ks, ns):
         
         mat_model = self.model_matrix()
         loc_model = glGetUniformLocation(GI.program, "model")
         glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
-        
-        ka = 0.1 # Coeficiente de reflexao ambiente do modelo
-        kd = 0.1 # Coeficiente de reflexao difusa do modelo
-        ks = 0.9 # Coeficiente de reflexao especular do modelo
-        ns = ns_inc # Expoente de reflexao especular
         
         # Recupera localização das variáveis na GPU
         loc_ka = glGetUniformLocation(GI.program, "ka")

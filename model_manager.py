@@ -150,7 +150,6 @@ class ModelManager:
         glEnableVertexAttribArray(loc_normals_coord)
         glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
     
-    def draw_models(ns_inc):
-
+    def draw_models(ka, kd, ks, ns):
         for key, model in ModelManager.models.items():
-            model.draw(ns_inc)
+            model.draw(ka, kd, ks, ns)

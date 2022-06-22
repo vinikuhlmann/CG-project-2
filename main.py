@@ -16,6 +16,7 @@ ModelManager.send_to_GPU()
 
 """
     CAMERA E MOUSE
+    TODO: criar classe separada
 """
 
 camera_pos   = glm.vec3(0.0,  0.0,  15.0)
@@ -129,7 +130,7 @@ while not glfw.window_should_close(GI.window):
     
     ang += 0.05
     ModelManager.models['luz'].transform(Coord3d(math.cos(ang)*0.5, math.sin(ang)*0.5, 3.0))
-    ModelManager.draw_models(ns_inc)
+    ModelManager.draw_models(ka=0.1, kd=0.1, ks=0.9, ns=ns_inc)
     
     mat_view = view()
     loc_view = glGetUniformLocation(GI.program, "view")
