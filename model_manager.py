@@ -1,7 +1,9 @@
 import os
+import numpy as np
 from OpenGL.GL import *
 from PIL import Image
 from model import *
+from glfw_instance import GlfwInstance as GI
 
 # Carrega os dados de um arquivo .obj
 def load_obj(filepath):
@@ -103,3 +105,44 @@ class ModelManager:
         ModelManager.vertices += model.vertices
         ModelManager.texture_coords += model.texture_coords
         ModelManager.normals += model.normals
+    
+    def send_to_GPU():
+
+        # Requisitar três slots para a GPU:
+        #   Um para enviar coordenadas dos vértices.
+        #   Um para enviar coordenadas de texturas.
+        #   Um para enviar coordenadas de normals para iluminação.
+        buffer = glGenBuffers(3)
+
+        # Enviando coordenadas de vértices para a GPU
+        vertices = np.zeros(len(ModelManager.vertices), [("position", np.float32, 3)])
+        vertices['position'] = ModelManager.vertices
+        glBindBuffer(GL_ARRAY_BUFFER, buffer[0])
+        glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+        stride = vertices.strides[0]
+        offset = ctypes.c_void_p(0)
+        loc_vertices = glGetAttribLocation(GI.program, "position")
+        glEnableVertexAttribArray(loc_vertices)
+        glVertexAttribPointer(loc_vertices, 3, GL_FLOAT, False, stride, offset)
+
+        # Enviando coordenadas de textura para a GPU
+        textures = np.zeros(len(ModelManager.texture_coords), [("position", np.float32, 2)])
+        textures['position'] = ModelManager.texture_coords
+        glBindBuffer(GL_ARRAY_BUFFER, buffer[1])
+        glBufferData(GL_ARRAY_BUFFER, textures.nbytes, textures, GL_STATIC_DRAW)
+        stride = textures.strides[0]
+        offset = ctypes.c_void_p(0)
+        loc_texture_coord = glGetAttribLocation(GI.program, "texture_coord")
+        glEnableVertexAttribArray(loc_texture_coord)
+        glVertexAttribPointer(loc_texture_coord, 2, GL_FLOAT, False, stride, offset)
+
+        # Enviando dados de Iluminação a GPU
+        normals = np.zeros(len(ModelManager.normals), [("position", np.float32, 3)])
+        normals['position'] = ModelManager.normals
+        glBindBuffer(GL_ARRAY_BUFFER, buffer[2])
+        glBufferData(GL_ARRAY_BUFFER, normals.nbytes, normals, GL_STATIC_DRAW)
+        stride = normals.strides[0]
+        offset = ctypes.c_void_p(0)
+        loc_normals_coord = glGetAttribLocation(GI.program, "normals")
+        glEnableVertexAttribArray(loc_normals_coord)
+        glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)

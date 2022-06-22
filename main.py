@@ -11,59 +11,9 @@ from model_manager import ModelManager
 
 GI.initialize()
 
-"""
-    FUNCOES DE CARREGAMENTO
-"""
 ModelManager.load_model('caixa', r=Coord3d(0.0, 1.0, 0.0))
 ModelManager.load_model('luz', r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1))
-
-# Gera listas com todas as coordenadas
-vertices_list = ModelManager.vertices
-texture_coords_list = ModelManager.texture_coords
-normals_list = ModelManager.normals
-
-"""
-    ENVIO DE DADOS PARA A GPU
-"""
-
-# Requisitar três slots para a GPU:
-#   Um para enviar coordenadas dos vértices.
-#   Um para enviar coordenadas de texturas.
-#   Um para enviar coordenadas de normals para iluminação.
-buffer = glGenBuffers(3)
-
-# Enviando coordenadas de vértices para a GPU
-vertices = np.zeros(len(vertices_list), [("position", np.float32, 3)])
-vertices['position'] = vertices_list
-glBindBuffer(GL_ARRAY_BUFFER, buffer[0])
-glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
-stride = vertices.strides[0]
-offset = ctypes.c_void_p(0)
-loc_vertices = glGetAttribLocation(GI.program, "position")
-glEnableVertexAttribArray(loc_vertices)
-glVertexAttribPointer(loc_vertices, 3, GL_FLOAT, False, stride, offset)
-
-# Enviando coordenadas de textura para a GPU
-textures = np.zeros(len(texture_coords_list), [("position", np.float32, 2)])
-textures['position'] = texture_coords_list
-glBindBuffer(GL_ARRAY_BUFFER, buffer[1])
-glBufferData(GL_ARRAY_BUFFER, textures.nbytes, textures, GL_STATIC_DRAW)
-stride = textures.strides[0]
-offset = ctypes.c_void_p(0)
-loc_texture_coord = glGetAttribLocation(GI.program, "texture_coord")
-glEnableVertexAttribArray(loc_texture_coord)
-glVertexAttribPointer(loc_texture_coord, 2, GL_FLOAT, False, stride, offset)
-
-# Enviando dados de Iluminação a GPU
-normals = np.zeros(len(normals_list), [("position", np.float32, 3)])
-normals['position'] = normals_list
-glBindBuffer(GL_ARRAY_BUFFER, buffer[2])
-glBufferData(GL_ARRAY_BUFFER, normals.nbytes, normals, GL_STATIC_DRAW)
-stride = normals.strides[0]
-offset = ctypes.c_void_p(0)
-loc_normals_coord = glGetAttribLocation(GI.program, "normals")
-glEnableVertexAttribArray(loc_normals_coord)
-glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
+ModelManager.send_to_GPU()
 
 # Desenha os modelos
 def draw_object3d(object3d: Model, light=False):
