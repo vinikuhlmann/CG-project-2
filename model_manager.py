@@ -67,7 +67,7 @@ class ModelManager:
 
     "static"
     main_dir = 'models'
-    model_list = {}
+    models = {}
     vertices = []
     texture_coords = []
     normals = []
@@ -76,7 +76,7 @@ class ModelManager:
 
     # Carrega um modelo
     @staticmethod
-    def load_model(model_dir, angle=0, r=Coord3d(0.0,1.0,0.0), t=Coord3d(0.0,0.0,0.0), s=Coord3d(1.0,1.0,1.0)):
+    def load_model(model_dir, light_source=False, angle=0, r=Coord3d(0.0,1.0,0.0), t=Coord3d(0.0,0.0,0.0), s=Coord3d(1.0,1.0,1.0)):
         print(f'Loading model {model_dir}')
         model_name = model_dir
         model_dir = os.path.join(ModelManager.main_dir, model_dir)
@@ -89,7 +89,10 @@ class ModelManager:
             if filepath.endswith('.obj'):
                 obj = load_obj(filepath)
                 start_vertex = ModelManager.vertex_count
-                model = Model(obj, start_vertex, angle, r, t, s)
+                if not light_source:
+                    model = Model(obj, start_vertex, angle, r, t, s)
+                else:
+                    model = LightModel(obj, start_vertex, angle, r, t, s)
                 ModelManager.vertex_count += model.vertex_count
             
             # Carregamento de textura
@@ -101,7 +104,7 @@ class ModelManager:
         model.add_textures(textures)
         
         # Adiciona o modelo na lista e guarda suas informações
-        ModelManager.model_list[model_name] = model
+        ModelManager.models[model_name] = model
         ModelManager.vertices += model.vertices
         ModelManager.texture_coords += model.texture_coords
         ModelManager.normals += model.normals
@@ -146,3 +149,8 @@ class ModelManager:
         loc_normals_coord = glGetAttribLocation(GI.program, "normals")
         glEnableVertexAttribArray(loc_normals_coord)
         glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
+    
+    def draw_models(ns_inc):
+
+        for key, model in ModelManager.models.items():
+            model.draw(ns_inc)

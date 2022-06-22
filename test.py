@@ -5,7 +5,7 @@ from model_manager import ModelManager
 GI.initialize()
 ModelManager.load_model('caixa', r=Coord3d(0.0, 1.0, 0.0))
 
-print(ModelManager.model_list)
+print(ModelManager.models)
 print(ModelManager.vertices)
 print(ModelManager.texture_coords )
 print(ModelManager.normals)

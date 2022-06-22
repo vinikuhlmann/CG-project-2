@@ -1,7 +1,8 @@
 import numpy as np
 import glm
 import math
-
+from OpenGL.GL import *
+from glfw_instance import GlfwInstance as GI
 from collections import namedtuple
 
 Coord3d = namedtuple('Coord3d', 'x y z') # ? Talvez substituir por glm.vec3
@@ -44,3 +45,64 @@ class Model:
     
     def transform(self, t: Coord3d):
         self.t = t
+    
+    # Desenha o modelo
+    def draw(self, ns_inc):
+
+        mat_model = self.model_matrix()
+        loc_model = glGetUniformLocation(GI.program, "model")
+        glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+        
+        ka = 0.1 # Coeficiente de reflexao ambiente do modelo
+        kd = 0.1 # Coeficiente de reflexao difusa do modelo
+        ks = 0.9 # Coeficiente de reflexao especular do modelo
+        ns = ns_inc # Expoente de reflexao especular
+        
+        # Recupera localização das variáveis na GPU
+        loc_ka = glGetUniformLocation(GI.program, "ka")
+        loc_kd = glGetUniformLocation(GI.program, "kd")
+        loc_ks = glGetUniformLocation(GI.program, "ks")
+        loc_ns = glGetUniformLocation(GI.program, "ns")
+        
+        # Insere o valor das variáveis
+        glUniform1f(loc_ka, ka)
+        glUniform1f(loc_kd, kd)
+        glUniform1f(loc_ks, ks)
+        glUniform1f(loc_ns, ns)
+        
+        for texture in self.textures:
+            glBindTexture(GL_TEXTURE_2D, texture) # Define id da textura do modelo
+        glDrawArrays(GL_TRIANGLES, self.start_vertex, self.vertex_count) # Renderiza
+
+class LightModel(Model):
+
+    def draw(self, ns_inc):
+        
+        mat_model = self.model_matrix()
+        loc_model = glGetUniformLocation(GI.program, "model")
+        glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
+        
+        ka = 0.1 # Coeficiente de reflexao ambiente do modelo
+        kd = 0.1 # Coeficiente de reflexao difusa do modelo
+        ks = 0.9 # Coeficiente de reflexao especular do modelo
+        ns = ns_inc # Expoente de reflexao especular
+        
+        # Recupera localização das variáveis na GPU
+        loc_ka = glGetUniformLocation(GI.program, "ka")
+        loc_kd = glGetUniformLocation(GI.program, "kd")
+        loc_ks = glGetUniformLocation(GI.program, "ks")
+        loc_ns = glGetUniformLocation(GI.program, "ns")
+        
+        # Insere o valor das variáveis
+        glUniform1f(loc_ka, ka)
+        glUniform1f(loc_kd, kd)
+        glUniform1f(loc_ks, ks)
+        glUniform1f(loc_ns, ns)
+
+        # Se objeto produzir luz, inserir luz
+        loc_light_pos = glGetUniformLocation(GI.program, "lightPos") # Localizacao da variavel lightPos na GPU
+        glUniform3f(loc_light_pos, self.t.x, self.t.y, self.t.z) # Define a posição da luz
+        
+        for texture in self.textures:
+            glBindTexture(GL_TEXTURE_2D, texture) # Define id da textura do modelo
+        glDrawArrays(GL_TRIANGLES, self.start_vertex, self.vertex_count) # Renderiza
