@@ -6,27 +6,21 @@ import math
 from PIL import Image
 
 from glfw_instance import GlfwInstance as GI
-from model import Coord3d, Model3d
+from model import *
+from model_manager import ModelManager
 
 GI.initialize()
 
 """
     FUNCOES DE CARREGAMENTO
 """
-
-model_list = {
-    'caixa': Model3d('caixa2.obj', ['caixa_madeira.jpg'], r=Coord3d(0.0, 1.0, 0.0)),
-    'luz': Model3d('luz.obj', ['luz.png'], r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1)),
-}
+ModelManager.load_model('caixa', r=Coord3d(0.0, 1.0, 0.0))
+ModelManager.load_model('luz', r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1))
 
 # Gera listas com todas as coordenadas
-vertices_list = []
-texture_coords_list = []
-normals_list = []
-for key, model in model_list.items():
-    vertices_list += model.vertices_list
-    texture_coords_list += model.texture_coords_list
-    normals_list += model.normals_list
+vertices_list = ModelManager.vertices
+texture_coords_list = ModelManager.texture_coords
+normals_list = ModelManager.normals
 
 """
     ENVIO DE DADOS PARA A GPU
@@ -72,7 +66,7 @@ glEnableVertexAttribArray(loc_normals_coord)
 glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
 
 # Desenha os modelos
-def draw_object3d(object3d: Model3d, light=False):
+def draw_object3d(object3d: Model, light=False):
 
     mat_model = object3d.model_matrix()
     loc_model = glGetUniformLocation(GI.program, "model")
@@ -100,7 +94,7 @@ def draw_object3d(object3d: Model3d, light=False):
         loc_light_pos = glGetUniformLocation(GI.program, "lightPos") # Localizacao da variavel lightPos na GPU
         glUniform3f(loc_light_pos, object3d.t.x, object3d.t.y, object3d.t.z) # Define a posição da luz
     
-    for texture in object3d.texture_list:
+    for texture in object3d.textures:
         glBindTexture(GL_TEXTURE_2D, texture) # Define id da textura do modelo
     glDrawArrays(GL_TRIANGLES, object3d.start_vertex, object3d.vertex_count) # Renderiza
 
@@ -217,11 +211,11 @@ while not glfw.window_should_close(GI.window):
     if polygonal_mode==False:
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
     
-    draw_object3d(model_list['caixa'])
+    draw_object3d(ModelManager.model_list['caixa'])
     
     ang += 0.05
-    model_list['luz'].transform(Coord3d(math.cos(ang)*0.5, math.sin(ang)*0.5, 3.0))
-    draw_object3d(model_list['luz'], light=True)
+    ModelManager.model_list['luz'].transform(Coord3d(math.cos(ang)*0.5, math.sin(ang)*0.5, 3.0))
+    draw_object3d(ModelManager.model_list['luz'], light=True)
     
     mat_view = view()
     loc_view = glGetUniformLocation(GI.program, "view")

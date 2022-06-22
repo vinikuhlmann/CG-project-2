@@ -5,20 +5,18 @@ from OpenGL.GL import *
 class GlfwInstance:
 
     "static"
-    width = 1280
-    height = 720
-    num_textures = 10
+    width = None
+    height = None
+    num_textures = None
     program = None
     window = None
 
     @staticmethod
-    def set_values(width, height, num_textures):
+    def initialize(width=1280, height=720, num_textures=10):
+        
         GlfwInstance.width = width
         GlfwInstance.height = height
         GlfwInstance.num_textures = num_textures
-
-    @staticmethod
-    def initialize():
 
         # Inicializa o glfw
         glfw.init()
