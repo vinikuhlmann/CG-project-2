@@ -326,40 +326,33 @@ def draw_object3d(object3d: Object3d, light=False):
     CAMERA E MOUSE
 """
 
-cameraPos   = glm.vec3(0.0,  0.0,  15.0);
-cameraFront = glm.vec3(0.0,  0.0, -1.0);
-cameraUp    = glm.vec3(0.0,  1.0,  0.0);
-
+camera_pos   = glm.vec3(0.0,  0.0,  15.0)
+camera_front = glm.vec3(0.0,  0.0, -1.0)
+camera_up    = glm.vec3(0.0,  1.0,  0.0)
 
 polygonal_mode = False
 
 def key_event(window,key,scancode,action,mods):
-    global cameraPos, cameraFront, cameraUp, polygonal_mode
+
+    global camera_pos, camera_front, camera_up, polygonal_mode
     global ns_inc
     
     cameraSpeed = 0.05
-    if key == 87 and (action==1 or action==2): # tecla W
-        cameraPos += cameraSpeed * cameraFront
-    
-    if key == 83 and (action==1 or action==2): # tecla S
-        cameraPos -= cameraSpeed * cameraFront
-    
-    if key == 65 and (action==1 or action==2): # tecla A
-        cameraPos -= glm.normalize(glm.cross(cameraFront, cameraUp)) * cameraSpeed
-        
-    if key == 68 and (action==1 or action==2): # tecla D
-        cameraPos += glm.normalize(glm.cross(cameraFront, cameraUp)) * cameraSpeed
-        
-    if key == 80 and action==1 and polygonal_mode==True:
+    if key == glfw.KEY_W and action in (glfw.PRESS, glfw.REPEAT):
+        camera_pos += cameraSpeed * camera_front
+    if key == glfw.KEY_S and action in (glfw.PRESS, glfw.REPEAT):
+        camera_pos -= cameraSpeed * camera_front
+    if key == glfw.KEY_A and action in (glfw.PRESS, glfw.REPEAT):
+        camera_pos -= glm.normalize(glm.cross(camera_front, camera_up)) * cameraSpeed
+    if key == glfw.KEY_D and action in (glfw.PRESS, glfw.REPEAT):
+        camera_pos += glm.normalize(glm.cross(camera_front, camera_up)) * cameraSpeed
+    if key == glfw.KEY_P and action==glfw.PRESS and polygonal_mode==True:
         polygonal_mode=False
     else:
-        if key == 80 and action==1 and polygonal_mode==False:
-            polygonal_mode=True
-        
-    if key == 265 and (action==1 or action==2): # tecla D
+        polygonal_mode=True
+    if key == glfw.KEY_UP and (action==glfw.PRESS or glfw.REPEAT):
         ns_inc = ns_inc * 2
-        
-    if key == 264 and (action==1 or action==2): # tecla D
+    if key == glfw.KEY_DOWN and (action==glfw.PRESS or glfw.REPEAT):
         ns_inc = ns_inc / 2
         
 firstMouse = True
@@ -369,7 +362,7 @@ lastX =  width/2
 lastY =  height/2
 
 def mouse_event(window, xpos, ypos):
-    global firstMouse, cameraFront, yaw, pitch, lastX, lastY
+    global firstMouse, camera_front, yaw, pitch, lastX, lastY
     if firstMouse:
         lastX = xpos
         lastY = ypos
@@ -384,8 +377,8 @@ def mouse_event(window, xpos, ypos):
     xoffset *= sensitivity
     yoffset *= sensitivity
 
-    yaw += xoffset;
-    pitch += yoffset;
+    yaw += xoffset
+    pitch += yoffset
 
     
     if pitch >= 90.0: pitch = 90.0
@@ -395,15 +388,15 @@ def mouse_event(window, xpos, ypos):
     front.x = math.cos(glm.radians(yaw)) * math.cos(glm.radians(pitch))
     front.y = math.sin(glm.radians(pitch))
     front.z = math.sin(glm.radians(yaw)) * math.cos(glm.radians(pitch))
-    cameraFront = glm.normalize(front)
+    camera_front = glm.normalize(front)
     
 glfw.set_key_callback(window,key_event)
 glfw.set_cursor_pos_callback(window, mouse_event)
 
 # Matriz view
 def view():
-    global cameraPos, cameraFront, cameraUp
-    mat_view = glm.lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    global camera_pos, camera_front, camera_up
+    mat_view = glm.lookAt(camera_pos, camera_pos + camera_front, camera_up);
     mat_view = np.array(mat_view)
     return mat_view
 
@@ -458,7 +451,7 @@ while not glfw.window_should_close(window):
     
     # atualizando a posicao da camera/observador na GPU para calculo da reflexao especular
     loc_view_pos = glGetUniformLocation(program, "viewPos") # recuperando localizacao da variavel viewPos na GPU
-    glUniform3f(loc_view_pos, cameraPos[0], cameraPos[1], cameraPos[2]) # posicao da camera/observador (x,y,z)
+    glUniform3f(loc_view_pos, camera_pos[0], camera_pos[1], camera_pos[2]) # posicao da camera/observador (x,y,z)
     
     glfw.swap_buffers(window)
 
