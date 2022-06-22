@@ -5,11 +5,10 @@ import glm
 import math
 from PIL import Image
 
-from glfw_instance import GlfwInstance
+from glfw_instance import GlfwInstance as GI
 from model import Coord3d, Model3d
 
-
-glfw_instance = GlfwInstance(1280, 720, 10)
+GI.initialize()
 
 """
     FUNCOES DE CARREGAMENTO
@@ -46,7 +45,7 @@ glBindBuffer(GL_ARRAY_BUFFER, buffer[0])
 glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
 stride = vertices.strides[0]
 offset = ctypes.c_void_p(0)
-loc_vertices = glGetAttribLocation(glfw_instance.program, "position")
+loc_vertices = glGetAttribLocation(GI.program, "position")
 glEnableVertexAttribArray(loc_vertices)
 glVertexAttribPointer(loc_vertices, 3, GL_FLOAT, False, stride, offset)
 
@@ -57,7 +56,7 @@ glBindBuffer(GL_ARRAY_BUFFER, buffer[1])
 glBufferData(GL_ARRAY_BUFFER, textures.nbytes, textures, GL_STATIC_DRAW)
 stride = textures.strides[0]
 offset = ctypes.c_void_p(0)
-loc_texture_coord = glGetAttribLocation(glfw_instance.program, "texture_coord")
+loc_texture_coord = glGetAttribLocation(GI.program, "texture_coord")
 glEnableVertexAttribArray(loc_texture_coord)
 glVertexAttribPointer(loc_texture_coord, 2, GL_FLOAT, False, stride, offset)
 
@@ -68,15 +67,15 @@ glBindBuffer(GL_ARRAY_BUFFER, buffer[2])
 glBufferData(GL_ARRAY_BUFFER, normals.nbytes, normals, GL_STATIC_DRAW)
 stride = normals.strides[0]
 offset = ctypes.c_void_p(0)
-loc_normals_coord = glGetAttribLocation(glfw_instance.program, "normals")
+loc_normals_coord = glGetAttribLocation(GI.program, "normals")
 glEnableVertexAttribArray(loc_normals_coord)
 glVertexAttribPointer(loc_normals_coord, 3, GL_FLOAT, False, stride, offset)
 
 # Desenha os modelos
 def draw_object3d(object3d: Model3d, light=False):
 
-    mat_model = object3d.model()
-    loc_model = glGetUniformLocation(glfw_instance.program, "model")
+    mat_model = object3d.model_matrix()
+    loc_model = glGetUniformLocation(GI.program, "model")
     glUniformMatrix4fv(loc_model, 1, GL_TRUE, mat_model)
     
     ka = 0.1 # Coeficiente de reflexao ambiente do modelo
@@ -85,10 +84,10 @@ def draw_object3d(object3d: Model3d, light=False):
     ns = ns_inc # Expoente de reflexao especular
     
     # Recupera localização das variáveis na GPU
-    loc_ka = glGetUniformLocation(glfw_instance.program, "ka")
-    loc_kd = glGetUniformLocation(glfw_instance.program, "kd")
-    loc_ks = glGetUniformLocation(glfw_instance.program, "ks")
-    loc_ns = glGetUniformLocation(glfw_instance.program, "ns")
+    loc_ka = glGetUniformLocation(GI.program, "ka")
+    loc_kd = glGetUniformLocation(GI.program, "kd")
+    loc_ks = glGetUniformLocation(GI.program, "ks")
+    loc_ns = glGetUniformLocation(GI.program, "ns")
     
     # Insere o valor das variáveis
     glUniform1f(loc_ka, ka)
@@ -98,7 +97,7 @@ def draw_object3d(object3d: Model3d, light=False):
 
     # Se objeto produzir luz, inserir luz
     if light:
-        loc_light_pos = glGetUniformLocation(glfw_instance.program, "lightPos") # Localizacao da variavel lightPos na GPU
+        loc_light_pos = glGetUniformLocation(GI.program, "lightPos") # Localizacao da variavel lightPos na GPU
         glUniform3f(loc_light_pos, object3d.t.x, object3d.t.y, object3d.t.z) # Define a posição da luz
     
     for texture in object3d.texture_list:
@@ -142,8 +141,8 @@ def key_event(window,key,scancode,action,mods):
 firstMouse = True
 yaw = -90.0 
 pitch = 0.0
-lastX =  glfw_instance.width/2
-lastY =  glfw_instance.height/2
+lastX =  GI.width/2
+lastY =  GI.height/2
 
 def mouse_event(window, xpos, ypos):
     global firstMouse, camera_front, yaw, pitch, lastX, lastY
@@ -175,8 +174,8 @@ def mouse_event(window, xpos, ypos):
     front.z = math.sin(glm.radians(yaw)) * math.cos(glm.radians(pitch))
     camera_front = glm.normalize(front)
     
-glfw.set_key_callback(glfw_instance.window,key_event)
-glfw.set_cursor_pos_callback(glfw_instance.window, mouse_event)
+glfw.set_key_callback(GI.window,key_event)
+glfw.set_cursor_pos_callback(GI.window, mouse_event)
 
 # Matriz view
 def view():
@@ -188,7 +187,7 @@ def view():
 # Matriz projection
 def projection():
     # perspective parameters: fovy, aspect, near, far
-    mat_projection = glm.perspective(glm.radians(45.0), glfw_instance.width/glfw_instance.height, 0.1, 1000.0)
+    mat_projection = glm.perspective(glm.radians(45.0), GI.width/GI.height, 0.1, 1000.0)
     mat_projection = np.array(mat_projection)    
     return mat_projection
 
@@ -197,14 +196,14 @@ def projection():
 """
 
 # Exibir a janela
-glfw.show_window(glfw_instance.window)
-glfw.set_cursor_pos(glfw_instance.window, lastX, lastY)
+glfw.show_window(GI.window)
+glfw.set_cursor_pos(GI.window, lastX, lastY)
 glEnable(GL_DEPTH_TEST) # importante para 3D
 
 ang = 0.1
 ns_inc = 32
     
-while not glfw.window_should_close(glfw_instance.window):
+while not glfw.window_should_close(GI.window):
 
     glfw.poll_events() 
     ang += 0.001
@@ -225,17 +224,17 @@ while not glfw.window_should_close(glfw_instance.window):
     draw_object3d(model_list['luz'], light=True)
     
     mat_view = view()
-    loc_view = glGetUniformLocation(glfw_instance.program, "view")
+    loc_view = glGetUniformLocation(GI.program, "view")
     glUniformMatrix4fv(loc_view, 1, GL_TRUE, mat_view)
 
     mat_projection = projection()
-    loc_projection = glGetUniformLocation(glfw_instance.program, "projection")
+    loc_projection = glGetUniformLocation(GI.program, "projection")
     glUniformMatrix4fv(loc_projection, 1, GL_TRUE, mat_projection)    
     
     # atualizando a posicao da camera/observador na GPU para calculo da reflexao especular
-    loc_view_pos = glGetUniformLocation(glfw_instance.program, "viewPos") # recuperando localizacao da variavel viewPos na GPU
+    loc_view_pos = glGetUniformLocation(GI.program, "viewPos") # recuperando localizacao da variavel viewPos na GPU
     glUniform3f(loc_view_pos, camera_pos[0], camera_pos[1], camera_pos[2]) # posicao da camera/observador (x,y,z)
     
-    glfw.swap_buffers(glfw_instance.window)
+    glfw.swap_buffers(GI.window)
 
 glfw.terminate()

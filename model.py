@@ -101,7 +101,7 @@ class Model3d:
         self.t = t
         self.s = s
 
-    def model(self):
+    def model_matrix(self):
         angle_rad = math.radians(self.angle)
         matrix_transform = glm.mat4(1.0) # Matriz identidade
         matrix_transform = glm.rotate(matrix_transform, angle_rad, glm.vec3(self.r.x, self.r.y, self.r.z)) # Rotação

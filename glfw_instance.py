@@ -4,16 +4,27 @@ from OpenGL.GL import *
 
 class GlfwInstance:
 
-    def __init__(self, width, height, num_textures) -> None:
+    "static"
+    width = 1280
+    height = 720
+    num_textures = 10
+    program = None
+    window = None
 
-        self.width = width
-        self.height = height
+    @staticmethod
+    def set_values(width, height, num_textures):
+        GlfwInstance.width = width
+        GlfwInstance.height = height
+        GlfwInstance.num_textures = num_textures
+
+    @staticmethod
+    def initialize():
 
         # Inicializa o glfw
         glfw.init()
         glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
-        self.window = glfw.create_window(width, height, "Iluminação", None, None)
-        glfw.make_context_current(self.window)
+        GlfwInstance.window = glfw.create_window(GlfwInstance.width, GlfwInstance.height, "Iluminação", None, None)
+        glfw.make_context_current(GlfwInstance.window)
 
         # GLSL vertex shader
         vertex_code = """
@@ -75,7 +86,7 @@ class GlfwInstance:
                 """
 
         # Requisita slots da GPU
-        self.program  = glCreateProgram()
+        GlfwInstance.program  = glCreateProgram()
         vertex   = glCreateShader(GL_VERTEX_SHADER)
         fragment = glCreateShader(GL_FRAGMENT_SHADER)
 
@@ -96,18 +107,18 @@ class GlfwInstance:
             raise RuntimeError("Erro de compilacao do Fragment Shader")
 
         # Conecta os shaders com o programa
-        glAttachShader(self.program, vertex)
-        glAttachShader(self.program, fragment)
+        glAttachShader(GlfwInstance.program, vertex)
+        glAttachShader(GlfwInstance.program, fragment)
 
         # Constrói o programa
-        glLinkProgram(self.program)
-        if not glGetProgramiv(self.program, GL_LINK_STATUS):
-            print(glGetProgramInfoLog(self.program))
+        glLinkProgram(GlfwInstance.program)
+        if not glGetProgramiv(GlfwInstance.program, GL_LINK_STATUS):
+            print(glGetProgramInfoLog(GlfwInstance.program))
             raise RuntimeError('Linking error')
             
         # Faz com que o programa seja o programa padrão
-        glUseProgram(self.program)
+        glUseProgram(GlfwInstance.program)
 
         # Ativa texturas
         glEnable(GL_TEXTURE_2D)
-        glGenTextures(num_textures)
+        glGenTextures(GlfwInstance.num_textures)
