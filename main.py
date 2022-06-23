@@ -30,7 +30,7 @@ ModelManager.send_to_GPU()
 """
 
 camera_pos   = glm.vec3(0,  7,  5)
-camera_front = glm.vec3(0,  0, -1)
+camera_front = glm.vec3(0,  1, -1)
 camera_up    = glm.vec3(0,  1,  0)
 polygonal_mode = False
 fovy = 45
@@ -39,20 +39,26 @@ def key_event(window,key,scancode,action,mods):
 
     global camera_pos, camera_front, camera_up, polygonal_mode
     global ns_inc, fovy
+
+    new_pos = camera_pos
     
     camera_speed = 0.1
     if key == glfw.KEY_W and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos += camera_speed * camera_front
+        new_pos = (camera_pos + camera_speed * camera_front)
     if key == glfw.KEY_S and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos -= camera_speed * camera_front
+        new_pos = (camera_pos - camera_speed * camera_front)
     if key == glfw.KEY_A and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos -= glm.normalize(glm.cross(camera_front, camera_up)) * camera_speed
+        new_pos = (camera_pos - ( glm.normalize(glm.cross(camera_front, camera_up)) * camera_speed ))
     if key == glfw.KEY_D and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos += glm.normalize(glm.cross(camera_front, camera_up)) * camera_speed
+        new_pos = (camera_pos + ( glm.normalize(glm.cross(camera_front, camera_up)) * camera_speed ))
     if key == glfw.KEY_SPACE and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos += camera_speed * camera_up
+        new_pos = (camera_pos + camera_speed * camera_up)
     if key == glfw.KEY_LEFT_SHIFT and action in (glfw.PRESS, glfw.REPEAT):
-        camera_pos -= camera_speed * camera_up
+         new_pos = (camera_pos - camera_speed * camera_up)
+
+    if new_pos[0] > -10 and new_pos[0] < 10 and new_pos[1] > .6 and  new_pos[1] < 10 and new_pos[2] > -10 and new_pos[2] < 10:
+        camera_pos = new_pos
+
     if key == glfw.KEY_P and action==glfw.PRESS:
         polygonal_mode = not polygonal_mode
     if key == glfw.KEY_UP and (action==glfw.PRESS or glfw.REPEAT):
