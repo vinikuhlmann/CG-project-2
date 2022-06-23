@@ -25,11 +25,12 @@ camera_pos   = glm.vec3(0,  7,  5)
 camera_front = glm.vec3(0,  0, -1)
 camera_up    = glm.vec3(0,  1,  0)
 polygonal_mode = False
+fovy = 45
 
 def key_event(window,key,scancode,action,mods):
 
     global camera_pos, camera_front, camera_up, polygonal_mode
-    global ns_inc
+    global ns_inc, fovy
     
     camera_speed = 0.1
     if key == glfw.KEY_W and action in (glfw.PRESS, glfw.REPEAT):
@@ -48,8 +49,10 @@ def key_event(window,key,scancode,action,mods):
         polygonal_mode = not polygonal_mode
     if key == glfw.KEY_UP and (action==glfw.PRESS or glfw.REPEAT):
         ns_inc = ns_inc * 2
-    if key == glfw.KEY_DOWN and (action==glfw.PRESS or glfw.REPEAT):
-        ns_inc = ns_inc / 2
+    if key == glfw.KEY_LEFT and (action==glfw.PRESS or glfw.REPEAT):
+        fovy -= 5
+    if key == glfw.KEY_RIGHT and (action==glfw.PRESS or glfw.REPEAT):
+        fovy += 5
         
 firstMouse = True
 yaw = -90 
@@ -100,7 +103,8 @@ def view():
 # Matriz projection
 def projection():
     # perspective parameters: fovy, aspect, near, far
-    mat_projection = glm.perspective(glm.radians(45), GI.width/GI.height, 0.1, 1000)
+    global fovy
+    mat_projection = glm.perspective(glm.radians(fovy), GI.width/GI.height, 0.1, 1000)
     mat_projection = np.array(mat_projection)    
     return mat_projection
 
