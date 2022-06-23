@@ -10,7 +10,7 @@ from model_manager import ModelManager
 
 GI.initialize()
 
-ModelManager.load_model('sky2')
+ModelManager.load_model('sky')
 ModelManager.load_model('terrain2', t=Coord3d(40, .35, -15), s=Coord3d(10, 10, 10) )
 
 ModelManager.load_model('watchtower', r=Coord3d(0, 1, 0), t=Coord3d(0, 0, 0))
@@ -106,6 +106,7 @@ def mouse_event(window, xpos, ypos):
     
 glfw.set_key_callback(GI.window,key_event)
 glfw.set_cursor_pos_callback(GI.window, mouse_event)
+glfw.set_input_mode(GI.window, glfw.CURSOR, glfw.CURSOR_DISABLED); 
 
 # Matriz view
 def view():
