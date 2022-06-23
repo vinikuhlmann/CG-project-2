@@ -18,12 +18,12 @@ Projeto de construção de um cenário 3D com controle da câmera, movimento, te
 - [ ] Classe de câmera/mouse
 
 ### Objetos
-- [ ] Ambiente interno
+- [X] Ambiente interno
 - [ ] Três modelos internos
 - [ ] Duas texturas de terreno
 - [ ] Dois modelos externos estáticos
-- [ ] Um modelo externo animado
+- [X] Um modelo animado
 - [ ] Céu para o ambiente externo
 - [ ] Restrição de exploração aos limites do cenário
 - [ ] Manipulação da matriz View e da Projection
-- [ ] Fonte de luz móvel
+- [X] Fonte de luz móvel
