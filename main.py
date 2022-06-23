@@ -10,8 +10,9 @@ from model_manager import ModelManager
 
 GI.initialize()
 
-ModelManager.load_model('watchtower', r=Coord3d(0.0, 1.0, 0.0))
-ModelManager.load_model('luz', light_source=True, r=Coord3d(0.0, 0.0, 1.0), s=Coord3d(0.1, 0.1, 0.1))
+ModelManager.load_model('watchtower', r=Coord3d(0, 1, 0))
+ModelManager.load_model('ranger', r=Coord3d(0, 1, 0), t=Coord3d(0, 6.5, 0), s=Coord3d(0.5, 0.5, 0.5))
+ModelManager.load_model('luz', light_source=True, r=Coord3d(0, 0, 1), s=Coord3d(0.1, 0.1, 0.1))
 ModelManager.send_to_GPU()
 
 """
@@ -19,9 +20,9 @@ ModelManager.send_to_GPU()
     TODO: criar classe separada
 """
 
-camera_pos   = glm.vec3(0.0,  0.0,  15.0)
-camera_front = glm.vec3(0.0,  0.0, -1.0)
-camera_up    = glm.vec3(0.0,  1.0,  0.0)
+camera_pos   = glm.vec3(0,  7,  5)
+camera_front = glm.vec3(0,  0, -1)
+camera_up    = glm.vec3(0,  1,  0)
 polygonal_mode = False
 
 def key_event(window,key,scancode,action,mods):
@@ -50,8 +51,8 @@ def key_event(window,key,scancode,action,mods):
         ns_inc = ns_inc / 2
         
 firstMouse = True
-yaw = -90.0 
-pitch = 0.0
+yaw = -90 
+pitch = 0
 lastX =  GI.width/2
 lastY =  GI.height/2
 
@@ -74,10 +75,10 @@ def mouse_event(window, xpos, ypos):
     yaw += xoffset
     pitch += yoffset
     
-    if pitch >= 90.0:
-        pitch = 90.0
-    if pitch <= -90.0:
-        pitch = -90.0
+    if pitch >= 90:
+        pitch = 90
+    if pitch <= -90:
+        pitch = -90
 
     front = glm.vec3()
     front.x = math.cos(glm.radians(yaw)) * math.cos(glm.radians(pitch))
@@ -98,7 +99,7 @@ def view():
 # Matriz projection
 def projection():
     # perspective parameters: fovy, aspect, near, far
-    mat_projection = glm.perspective(glm.radians(45.0), GI.width/GI.height, 0.1, 1000.0)
+    mat_projection = glm.perspective(glm.radians(45), GI.width/GI.height, 0.1, 1000)
     mat_projection = np.array(mat_projection)    
     return mat_projection
 
@@ -121,15 +122,16 @@ while not glfw.window_should_close(GI.window):
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
-    glClearColor(0.2, 0.2, 0.2, 1.0)
+    glClearColor(0.2, 0.2, 0.2, 1)
     
     if polygonal_mode==True:
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
     if polygonal_mode==False:
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
     
-    ang += 0.05
-    ModelManager.models['luz'].transform(Coord3d(math.cos(ang)*0.5, math.sin(ang)*0.5, 3.0))
+    ang += 1
+    ModelManager.models['ranger'].transform(t=Coord3d(math.cos(ang*0.02)*0.5, 6.5, math.sin(ang*0.02)*0.5))
+    ModelManager.models['luz'].transform(t=Coord3d(math.cos(ang*0.05)*0.5, math.sin(ang*0.05)*0.5, 3))
     ModelManager.draw_models(ka=0.1, kd=0.1, ks=0.9, ns=ns_inc)
     
     mat_view = view()

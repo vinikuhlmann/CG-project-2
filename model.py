@@ -43,8 +43,16 @@ class Model:
         matrix_transform = np.array(matrix_transform)
         return matrix_transform
     
-    def transform(self, t: Coord3d):
-        self.t = t
+    def transform(self, r=None, t=None, s=None):
+        if r != None:
+            self.r = r
+        if t != None:
+            self.t = t
+        if s != None:
+            self.s = s
+    
+    def rotate(self, angle):
+        self.angle = angle
     
     # Desenha o modelo
     #   ka -> Coeficiente de reflexao ambiente do modelo
@@ -74,7 +82,9 @@ class Model:
         glUniform1f(loc_ks, ks)
         glUniform1f(loc_ns, ns)
         
-        glBindTexture(GL_TEXTURE_2D, self.texture) # Define id da textura do modelo
+        if self.texture != None:
+            glBindTexture(GL_TEXTURE_2D, self.texture) # Define id da textura do modelo
+
         glDrawArrays(GL_TRIANGLES, self.start_vertex, self.vertex_count) # Renderiza
 
 class LightModel(Model):

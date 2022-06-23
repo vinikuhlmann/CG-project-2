@@ -82,6 +82,7 @@ class ModelManager:
         print(f'Loading model {model_dir}')
         model_name = model_dir
         model_dir = os.path.join(ModelManager.main_dir, model_dir)
+        texture = None
         for filepath in os.listdir(model_dir):
             print(f'\tLoading {filepath}')
             filepath = os.path.join(model_dir, filepath)
@@ -102,7 +103,8 @@ class ModelManager:
                 texture = ModelManager.texture_count
                 ModelManager.texture_count += 1
         
-        model.add_texture(texture)
+        if texture != None:
+            model.add_texture(texture)
         
         # Adiciona o modelo na lista e guarda suas informações
         ModelManager.models[model_name] = model
