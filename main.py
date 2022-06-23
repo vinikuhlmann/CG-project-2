@@ -12,6 +12,7 @@ GI.initialize()
 
 ModelManager.load_model('watchtower', r=Coord3d(0, 1, 0))
 ModelManager.load_model('ranger', r=Coord3d(0, 1, 0), t=Coord3d(0, 6.5, 0), s=Coord3d(0.5, 0.5, 0.5))
+ModelManager.load_model('stool', r=Coord3d(0, 1, 0), t=Coord3d(0, 6.5, 0), s=Coord3d(0.1, 0.1, 0.1))
 ModelManager.load_model('luz', light_source=True, r=Coord3d(0, 0, 1), s=Coord3d(0.1, 0.1, 0.1))
 ModelManager.send_to_GPU()
 
