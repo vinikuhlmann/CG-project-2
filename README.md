@@ -26,4 +26,4 @@ Projeto de construção de um cenário 3D com controle da câmera, movimento, te
 - [ ] Céu para o ambiente externo
 - [ ] Restrição de exploração aos limites do cenário
 - [ ] Manipulação da matriz View e da Projection
-- [ ] Fonte de luz móvel
+- [X] Fonte de luz móvel
