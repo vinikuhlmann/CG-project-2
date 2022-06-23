@@ -11,17 +11,17 @@ from model_manager import ModelManager
 GI.initialize()
 
 ModelManager.load_model('sky')
-ModelManager.load_model('terrain2', t=Coord3d(40, .2, -15), s=Coord3d(10, 10, 10) )
+ModelManager.load_model('terrain2', t=Coord3d(40, .35, -15), s=Coord3d(10, 10, 10) )
 
-ModelManager.load_model('watchtower', r=Coord3d(0, 1, 0))
+ModelManager.load_model('watchtower', r=Coord3d(0, 1, 0), t=Coord3d(0, 0, 0))
 ModelManager.load_model('ranger', r=Coord3d(0, 1, 0), s=Coord3d(0.5, 0.5, 0.5))
 ModelManager.load_model('stool', r=Coord3d(0, 1, 0), t=Coord3d(0, 6.5, 0), s=Coord3d(0.1, 0.1, 0.1))
 ModelManager.load_model('moon', light_source=True, r=Coord3d(-1, 0, -1), s=Coord3d(0.01, 0.01, 0.01))
-ModelManager.load_model('pinheiro', r=Coord3d(0, 1, 0), t=Coord3d(0, 1, 5), s=Coord3d(1, 1, 1))
-ModelManager.load_model('toquinho', r=Coord3d(0, 1, 0), t=Coord3d(-3.5, 1, -2.5), s=Coord3d(1, 1, 1))
-ModelManager.load_model('cerca', r=Coord3d(0, 1, 0), t=Coord3d(5, 1.56, -2.5), s=Coord3d(0.5, 0.5, 0.5))
-ModelManager.load_model('arvore', r=Coord3d(0, 1, 0), t=Coord3d(5, 1, 0), s=Coord3d(0.06, 0.06, 0.06))
 ModelManager.load_model('lata', r=Coord3d(0, 1, 0), t=Coord3d(0, 6.9, 0), s=Coord3d(0.06, 0.06, 0.06))
+ModelManager.load_model('pinheiro', r=Coord3d(0, 1, 0), t=Coord3d(0, 0.3, 5), s=Coord3d(1, 1, 1))
+ModelManager.load_model('toquinho', r=Coord3d(0, 1, 0), t=Coord3d(-3.5, 0.6, -2.5), s=Coord3d(1, 1, 1))
+ModelManager.load_model('cerca', r=Coord3d(0, 1, 0), t=Coord3d(5, 1.68, -2.5), s=Coord3d(0.45, 0.45, 0.45))
+ModelManager.load_model('arvore', r=Coord3d(0, 1, 0), t=Coord3d(5, 0.65, 0), s=Coord3d(0.06, 0.06, 0.06))
 ModelManager.send_to_GPU()
 
 """
