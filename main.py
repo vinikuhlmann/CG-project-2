@@ -11,9 +11,9 @@ from model_manager import ModelManager
 GI.initialize()
 
 ModelManager.load_model('watchtower', r=Coord3d(0, 1, 0))
-ModelManager.load_model('ranger', r=Coord3d(0, 1, 0), t=Coord3d(0, 6.5, 0), s=Coord3d(0.5, 0.5, 0.5))
+ModelManager.load_model('ranger', r=Coord3d(0, 1, 0), s=Coord3d(0.5, 0.5, 0.5))
 ModelManager.load_model('stool', r=Coord3d(0, 1, 0), t=Coord3d(0, 6.5, 0), s=Coord3d(0.1, 0.1, 0.1))
-ModelManager.load_model('luz', light_source=True, r=Coord3d(0, 0, 1), s=Coord3d(0.1, 0.1, 0.1))
+ModelManager.load_model('moon', light_source=True, r=Coord3d(-1, 0, -1), s=Coord3d(0.01, 0.01, 0.01))
 ModelManager.send_to_GPU()
 
 """
@@ -114,7 +114,7 @@ glfw.set_cursor_pos(GI.window, lastX, lastY)
 glEnable(GL_DEPTH_TEST) # importante para 3D
 
 ang = 0.1
-ns_inc = 32
+ns_inc = 4
     
 while not glfw.window_should_close(GI.window):
 
@@ -132,7 +132,7 @@ while not glfw.window_should_close(GI.window):
     
     ang += 1
     ModelManager.models['ranger'].transform(t=Coord3d(math.cos(ang*0.02)*0.5, 6.5, math.sin(ang*0.02)*0.5))
-    ModelManager.models['luz'].transform(t=Coord3d(math.cos(ang*0.05)*0.5, math.sin(ang*0.05)*0.5, 3))
+    ModelManager.models['moon'].transform(t=Coord3d(math.cos(ang*0.01)*20, 10, math.sin(ang*0.01)*20))
     ModelManager.draw_models(ka=0.1, kd=0.1, ks=0.9, ns=ns_inc)
     
     mat_view = view()
