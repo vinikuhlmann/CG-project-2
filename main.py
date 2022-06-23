@@ -10,7 +10,7 @@ from model_manager import ModelManager
 
 GI.initialize()
 
-ModelManager.load_model('sky')
+ModelManager.load_model('sky2')
 ModelManager.load_model('terrain2', t=Coord3d(40, .35, -15), s=Coord3d(10, 10, 10) )
 
 ModelManager.load_model('watchtower', r=Coord3d(0, 1, 0), t=Coord3d(0, 0, 0))
