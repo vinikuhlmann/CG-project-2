@@ -129,10 +129,22 @@ while not glfw.window_should_close(GI.window):
     if polygonal_mode==False:
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
     
-    ang += 1
-    ModelManager.models['ranger'].transform(t=Coord3d(math.cos(ang*0.02)*0.5, 6.5, math.sin(ang*0.02)*0.5))
-    ModelManager.models['luz'].transform(t=Coord3d(math.cos(ang*0.05)*0.5, math.sin(ang*0.05)*0.5, 3))
-    ModelManager.draw_models(ka=0.1, kd=0.1, ks=0.9, ns=ns_inc)
+    ang += .2
+    ModelManager.models['ranger'].transform( 
+        t=Coord3d( math.cos(ang*0.02)*0.5, 6.5, math.sin(ang*0.02)*0.5 )
+    )
+    ModelManager.models['ranger'].rotate( 
+        ang * -1.14,
+    )
+    ModelManager.models['luz'].transform( 
+        t=Coord3d(math.cos(ang*0.05)*0.5, math.sin(ang*0.05)*0.5, 3)
+    )
+    ModelManager.draw_models(
+        ka=0.1, 
+        kd=0.1, 
+        ks=0.9, 
+        ns=ns_inc
+    )
     
     mat_view = view()
     loc_view = glGetUniformLocation(GI.program, "view")

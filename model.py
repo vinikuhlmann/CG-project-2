@@ -37,8 +37,8 @@ class Model:
     def model_matrix(self):
         angle_rad = math.radians(self.angle)
         matrix_transform = glm.mat4(1.0) # Matriz identidade
-        matrix_transform = glm.rotate(matrix_transform, angle_rad, glm.vec3(self.r.x, self.r.y, self.r.z)) # Rotação
         matrix_transform = glm.translate(matrix_transform, glm.vec3(self.t.x, self.t.y, self.t.z)) # Translação
+        matrix_transform = glm.rotate(matrix_transform, angle_rad, glm.vec3(self.r.x, self.r.y, self.r.z)) # Rotação
         matrix_transform = glm.scale(matrix_transform, glm.vec3(self.s.x, self.s.y, self.s.z)) # Escala
         matrix_transform = np.array(matrix_transform)
         return matrix_transform
