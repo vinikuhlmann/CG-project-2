@@ -62,8 +62,10 @@ def key_event(window,key,scancode,action,mods):
 
     if key == glfw.KEY_P and action==glfw.PRESS:
         polygonal_mode = not polygonal_mode
-    if key == glfw.KEY_UP and (action==glfw.PRESS or glfw.REPEAT):
+    if key == glfw.KEY_DOWN and (action==glfw.PRESS or glfw.REPEAT):
         ns_inc = ns_inc * 2
+    if key == glfw.KEY_UP and (action==glfw.PRESS or glfw.REPEAT):
+        ns_inc = ns_inc / 2
     if key == glfw.KEY_LEFT and (action==glfw.PRESS or glfw.REPEAT):
         fovy -= 5
     if key == glfw.KEY_RIGHT and (action==glfw.PRESS or glfw.REPEAT):
@@ -134,7 +136,7 @@ glfw.set_cursor_pos(GI.window, lastX, lastY)
 glEnable(GL_DEPTH_TEST) # importante para 3D
 
 ang = 0.1
-ns_inc = 4
+ns_inc = 1
     
 while not glfw.window_should_close(GI.window):
 
